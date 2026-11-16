@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Ícone do Fôlego: raio verde-limão sobre grafite. -->
+  <rect width="1024" height="1024" rx="225" fill="#12161C"/>
+  <polygon fill="#C6F432" transform="translate(512 512) scale(0.82) translate(-512 -512)"
+           points="560,80 250,580 470,580 410,944 780,420 560,420 700,80"/>
+</svg>
