@@ -48,7 +48,7 @@ void main() {
         values: {
           'peso_kg': 84.0 - m,
           'gordura_pct': 24.0 - m / 2,
-          'massa_muscular_kg': 34 + m / 10,
+          'massa_muscular_pct': 60 + m / 10,
           'agua_pct': 55,
           'gordura_visceral': 9,
           'tmb_kcal': 1750,
@@ -58,10 +58,7 @@ void main() {
       ));
     }
     await b.saveGoal(const BodyGoal(metric: 'peso_kg', target: 75));
-    final store = await storeWithPin('1234');
-
-    await pumpApp(tester, db, store);
-    await typePin(tester, '1234');
+    await pumpApp(tester, db);
 
     for (final tab in ['Hoje', 'Lançar', 'Corpo', 'Evolução', 'Mais']) {
       await tester.tap(find.text(tab).last);
@@ -85,7 +82,6 @@ void main() {
       '/mais/medidas',
       '/mais/regra',
       '/mais/semana',
-      '/mais/pin',
       '/mais/backup',
       '/mais/sobre',
     ];

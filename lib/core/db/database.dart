@@ -13,14 +13,17 @@ Future<Database> openFolegoDatabase() async {
 }
 
 /// Usado também nos testes, com `databaseFactoryFfi` e `inMemoryDatabasePath`.
-Future<Database> openWithFactory(DatabaseFactory factory, String path) {
+Future<Database> openWithFactory(DatabaseFactory factory, String path,
+    {bool personalSeed = true}) {
   return factory.openDatabase(
     path,
     options: OpenDatabaseOptions(
       version: schemaVersion,
       onConfigure: (db) => db.execute('PRAGMA foreign_keys = ON'),
-      onCreate: (db, version) => migrate(db, 0, version),
-      onUpgrade: (db, oldV, newV) => migrate(db, oldV, newV),
+      onCreate: (db, version) =>
+          migrate(db, 0, version, personalSeed: personalSeed),
+      onUpgrade: (db, oldV, newV) =>
+          migrate(db, oldV, newV, personalSeed: personalSeed),
       singleInstance: false,
     ),
   );

@@ -42,7 +42,12 @@ const bodyMetrics = <BodyMetric>[
   BodyMetric(key: 'massa_gorda_kg', label: 'Massa gorda', unit: 'kg', max: 300),
   BodyMetric(key: 'massa_magra_kg', label: 'Massa magra', unit: 'kg', max: 300),
   BodyMetric(
-      key: 'massa_muscular_kg', label: 'Massa muscular', unit: 'kg', max: 300),
+      key: 'massa_muscular_pct', label: 'Massa muscular', unit: '%', max: 100),
+  BodyMetric(
+      key: 'massa_muscular_kg',
+      label: 'Massa muscular (kg)',
+      unit: 'kg',
+      max: 300),
   BodyMetric(key: 'massa_ossea_kg', label: 'Massa óssea', unit: 'kg', max: 50),
   BodyMetric(key: 'agua_pct', label: 'Água', unit: '%', max: 100),
   BodyMetric(key: 'proteina_pct', label: 'Proteína', unit: '%', max: 100),
@@ -92,3 +97,7 @@ final bodyMetricByKey = {for (final m in bodyMetrics) m.key: m};
 /// Métricas derivadas (calculadas, nunca gravadas).
 const derivedBmiKey = 'imc';
 const derivedFatMassKey = 'massa_gorda_calc';
+
+/// Resíduos (%) = 100 − gordura% − massa muscular%: o que não é gordura nem
+/// músculo (água, órgãos, ossos...), como mostra a avaliação da academia.
+const derivedResidualKey = 'residuos_pct';

@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:folego/core/db/database.dart';
+import 'package:folego/domain/body.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:folego/core/db/schema.dart';
 import 'package:folego/domain/csv_import.dart';
 import 'package:folego/domain/golden_rule.dart';
 import 'package:folego/domain/models.dart';
-import 'package:folego/features/auth/pin_service.dart';
 import 'package:folego/features/body/body_repository.dart';
 import 'package:folego/features/cardio/cardio_repository.dart';
 import 'package:folego/features/catalog/catalog_repository.dart';
@@ -11,7 +15,6 @@ import 'package:folego/features/settings/backup_service.dart';
 import 'package:folego/features/settings/config_repository.dart';
 import 'package:folego/features/settings/csv_import_service.dart';
 import 'package:folego/features/today/workout_repository.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'test_db.dart';
 
@@ -38,7 +41,7 @@ void main() {
       (await catalog.exercises()).firstWhere((e) => e.name == name);
 
   group('schema e seeds', () {
-    test('foreign keys ligadas e versão 1', () async {
+    test('foreign keys ligadas e versão atual', () async {
       final fk = await db.rawQuery('PRAGMA foreign_keys');
       expect(fk.first.values.first, 1);
       expect(await db.getVersion(), schemaVersion);
@@ -351,27 +354,42 @@ void main() {
     });
   });
 
-  group('PIN', () {
-    test('hash com salt, verificação e bloqueio após 5 erros', () async {
-      var now = DateTime(2026, 11, 16, 8);
-      final store = MemorySecureStore();
-      final pin = PinService(store, clock: () => now);
-      expect(await pin.hasPin(), isFalse);
-      await pin.setPin('2468');
-      expect(await pin.hasPin(), isTrue);
-      expect(store.data.values, isNot(contains('2468')));
-      expect(await pin.verify('2468'), isA<PinOk>());
+  group('dados iniciais do dono', () {
+    test('banco novo já vem com perfil e a avaliação de 08/09/2026',
+        () async {
+      sqfliteFfiInit();
+      final seeded =
+          await openWithFactory(databaseFactoryFfi, inMemoryDatabasePath);
+      final p = (await ConfigRepository(seeded).profile())!;
+      expect(p.name, 'Bernardo');
+      expect(p.heightCm, 184);
+      expect(await ConfigRepository(seeded).onboarded(), isTrue);
+      final a = (await BodyRepository(seeded).assessments()).single;
+      expect(a.date, DateTime(2026, 9, 8));
+      expect(a['peso_kg'], 82.5);
+      expect(a['gordura_pct'], 13.93);
+      expect(a['massa_muscular_pct'], 62.07);
+      expect(metricValue(a, 'residuos_pct', p), closeTo(24, 1e-9));
+      expect(bmi(a['peso_kg'], p.heightCm), closeTo(24.37, 0.01));
+      expect(a.measures, hasLength(11));
+      await seeded.close();
+    });
 
-      for (var i = 0; i < 4; i++) {
-        final r = await pin.verify('0000');
-        expect(r, isA<PinWrong>());
-        expect((r as PinWrong).attemptsLeft, 4 - i);
-      }
-      expect(await pin.verify('0000'), isA<PinLocked>());
-      // Mesmo o PIN certo fica bloqueado durante a espera.
-      expect(await pin.verify('2468'), isA<PinLocked>());
-      now = now.add(const Duration(seconds: 31));
-      expect(await pin.verify('2468'), isA<PinOk>());
+    test('migração v1 → v2 mantém os dados e soma a avaliação', () async {
+      sqfliteFfiInit();
+      final path = '${Directory.systemTemp.createTempSync().path}/v1.db';
+      final v1 = await databaseFactoryFfi.openDatabase(path,
+          options: OpenDatabaseOptions(
+              version: 1,
+              onCreate: (d, _) => migrate(d, 0, 1, personalSeed: false)));
+      await v1.insert('perfil', {'id': 1, 'nome': 'Eu mesmo'});
+      await v1.close();
+      final v2 = await openWithFactory(databaseFactoryFfi, path);
+      expect(await v2.getVersion(), 2);
+      expect((await ConfigRepository(v2).profile())!.name, 'Eu mesmo');
+      expect((await ConfigRepository(v2).profile())!.heightCm, 184);
+      expect(await BodyRepository(v2).assessments(), hasLength(1));
+      await v2.close();
     });
   });
 }

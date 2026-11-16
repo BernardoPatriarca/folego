@@ -34,6 +34,10 @@ jobs:
       - name: Dependências
         run: flutter pub get
 
+      - name: Versão do pubspec
+        id: ver
+        run: echo "v=$(grep '^version:' pubspec.yaml | sed 's/version: *//; s/+.*//')" >> "$GITHUB_OUTPUT"
+
       - name: Análise
         run: flutter analyze
 
@@ -89,8 +93,8 @@ jobs:
       - name: Publicar release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0-build.${{ github.run_number }}
-          name: Fôlego 1.0.0 (build ${{ github.run_number }})
+          tag_name: v${{ steps.ver.outputs.v }}-build.${{ github.run_number }}
+          name: Fôlego ${{ steps.ver.outputs.v }} (build ${{ github.run_number }})
           target_commitish: ${{ github.sha }}
           prerelease: true
           body_path: ${{ runner.temp }}/notas.md

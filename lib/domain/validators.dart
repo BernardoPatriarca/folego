@@ -36,11 +36,5 @@ String? validateEffort(int? effort) {
   return null;
 }
 
-String? validatePin(String pin) {
-  if (!RegExp(r'^\d+$').hasMatch(pin)) return 'Use apenas números';
-  if (pin.length < 4 || pin.length > 6) return 'O PIN tem de 4 a 6 dígitos';
-  return null;
-}
-
 String _n(double v) =>
     v == v.roundToDouble() ? v.toInt().toString() : v.toString().replaceAll('.', ',');

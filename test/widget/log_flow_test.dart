@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'helpers.dart';
 
 void main() {
-  testWidgets('desbloqueia com PIN, lança flexão e vê o recorde',
+  testWidgets('abre direto, lança flexão e vê o recorde',
       (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.75;
@@ -18,15 +18,9 @@ void main() {
     // Histórico: 20 flexões anteontem.
     await workouts.logDone(
         date: DateTime(2026, 11, 16), exerciseId: flexao, done: 20);
-    final store = await storeWithPin('2468');
+    await pumpApp(tester, db);
 
-    await pumpApp(tester, db, store);
-
-    // Tela de PIN: um erro, depois o certo.
-    expect(find.text('Digite seu PIN'), findsOneWidget);
-    await typePin(tester, '1111');
-    expect(find.textContaining('PIN incorreto'), findsOneWidget);
-    await typePin(tester, '2468');
+    // Abre direto na tela Hoje, sem PIN.
     expect(find.text('BORA, BERNARDO'), findsOneWidget);
 
     // Aba Lançar.
@@ -68,8 +62,7 @@ void main() {
     tester.view.devicePixelRatio = 2.75;
     addTearDown(tester.view.reset);
     final db = await openWidgetDb();
-    await pumpApp(tester, db, await storeWithPin('1234'));
-    await typePin(tester, '1234');
+    await pumpApp(tester, db);
     await tester.tap(find.text('Lançar'));
     await settle(tester);
     await tester.tap(find.widgetWithText(ChoiceChip, 'Prancha'));

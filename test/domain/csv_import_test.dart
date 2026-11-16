@@ -8,7 +8,7 @@ void main() {
   test('modelo tem o cabeçalho da especificação', () {
     expect(csvTemplate().trim(),
         'data;origem;peso_kg;altura_cm;gordura_pct;massa_gorda_kg;'
-        'massa_magra_kg;massa_muscular_kg;massa_ossea_kg;agua_pct;'
+        'massa_magra_kg;massa_muscular_kg;massa_muscular_pct;massa_ossea_kg;agua_pct;'
         'proteina_pct;gordura_visceral;tmb_kcal;idade_metabolica;fc_repouso;'
         'pressao_sistolica;pressao_diastolica;observacao');
   });
@@ -16,7 +16,7 @@ void main() {
   test('vírgula e ponto decimais, datas BR e ISO, campos vazios', () {
     final csv = '$header\n'
         '10/01/2026;balança;82,4;;22,5;;;;;;;;;;;;;\n'
-        '2026-02-10;academia;81.2;178;21.9;;;35,1;;;;;1750;;58;120;80;ok\n';
+        '2026-02-10;academia;81.2;178;21.9;;;35,1;62,07;;;;;1750;;58;120;80;ok\n';
     final r = parseAssessmentCsv(csv, known);
     expect(r.fatal, isNull);
     expect(r.errors, isEmpty);
@@ -26,6 +26,7 @@ void main() {
     expect(r.rows[0].origin, 'balança');
     expect(r.rows[1].date, DateTime(2026, 2, 10));
     expect(r.rows[1].values['massa_muscular_kg'], 35.1);
+    expect(r.rows[1].values['massa_muscular_pct'], 62.07);
     expect(r.rows[1].values['tmb_kcal'], 1750);
     expect(r.rows[1].values['pressao_diastolica'], 80);
     expect(r.rows[1].note, 'ok');
@@ -33,7 +34,7 @@ void main() {
 
   test('colunas extras: conhecidas e desconhecidas', () {
     final csv = '$header;Cintura;Braço direito contraído;Punho\n'
-        '01/03/2026;;80;;;;;;;;;;;;;;;;88,5;36;17\n';
+        '01/03/2026;;80;;;;;;;;;;;;;;;;;88,5;36;17\n';
     final r = parseAssessmentCsv(csv, known);
     expect(r.extraColumns, ['Cintura', 'Braço direito contraído', 'Punho']);
     expect(r.unknownColumns, ['Punho']);

@@ -104,6 +104,7 @@ class AssessmentDetailPage extends ConsumerWidget {
           row('massa_gorda_kg',
               labelOverride:
                   fatInformed ? 'Massa gorda' : 'Massa gorda (calculada)'),
+          row('residuos_pct'),
           row('imc'),
         ]
       ),

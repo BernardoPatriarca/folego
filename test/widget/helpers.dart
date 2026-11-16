@@ -4,7 +4,6 @@ import 'package:folego/app/app.dart';
 import 'package:folego/core/db/database.dart';
 import 'package:folego/core/providers.dart';
 import 'package:folego/domain/models.dart';
-import 'package:folego/features/auth/pin_service.dart';
 import 'package:folego/features/settings/config_repository.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +16,8 @@ final fixedNow = DateTime(2026, 11, 18, 9);
 Future<Database> openWidgetDb() async {
   sqfliteFfiInit();
   final db = await openWithFactory(
-      databaseFactoryFfiNoIsolate, inMemoryDatabasePath);
+      databaseFactoryFfiNoIsolate, inMemoryDatabasePath,
+      personalSeed: false);
   final config = ConfigRepository(db);
   await config.saveProfile(
       const Profile(name: 'Bernardo Teste', heightCm: 178));
@@ -25,19 +25,12 @@ Future<Database> openWidgetDb() async {
   return db;
 }
 
-Future<MemorySecureStore> storeWithPin(String pin) async {
-  final store = MemorySecureStore();
-  await PinService(store).setPin(pin);
-  return store;
-}
-
-Future<void> pumpApp(WidgetTester tester, Database db, SecureStore store) async {
+Future<void> pumpApp(WidgetTester tester, Database db) async {
   Intl.defaultLocale = 'pt_BR';
   await initializeDateFormatting('pt_BR');
   await tester.pumpWidget(ProviderScope(
     overrides: [
       databaseProvider.overrideWithValue(db),
-      secureStoreProvider.overrideWithValue(store),
       clockProvider.overrideWithValue(() => fixedNow),
     ],
     child: const FolegoApp(),
@@ -50,15 +43,6 @@ Future<void> settle(WidgetTester tester) async {
   for (var i = 0; i < 20; i++) {
     await tester.pump(const Duration(milliseconds: 100));
   }
-}
-
-Future<void> typePin(WidgetTester tester, String pin) async {
-  for (final d in pin.split('')) {
-    await tester.tap(find.bySemanticsLabel(d).last);
-    await tester.pump();
-  }
-  await tester.tap(find.bySemanticsLabel('Confirmar'));
-  await settle(tester);
 }
 
 /// Rola até o widget e toca nele.

@@ -6,7 +6,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../features/auth/pin_service.dart';
 import '../features/body/body_repository.dart';
 import '../features/cardio/cardio_repository.dart';
 import '../features/cardio/cardio_source.dart';
@@ -19,12 +18,6 @@ import '../features/today/workout_repository.dart';
 /// Sobrescrito em `main.dart` (e nos testes) com o banco aberto.
 final databaseProvider = Provider<Database>(
     (ref) => throw UnimplementedError('databaseProvider não configurado'));
-
-final secureStoreProvider =
-    Provider<SecureStore>((ref) => const FlutterSecureStore());
-
-final pinServiceProvider =
-    Provider<PinService>((ref) => PinService(ref.watch(secureStoreProvider)));
 
 /// Relógio do app (sobrescrito nos testes).
 final clockProvider = Provider<DateTime Function()>((ref) => DateTime.now);

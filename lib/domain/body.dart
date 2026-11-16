@@ -50,6 +50,13 @@ double? fatMassKg(double? weightKg, double? fatPct) {
   return weightKg * fatPct / 100;
 }
 
+/// Resíduos (%) = 100 − gordura% − massa muscular%.
+double? residualPct(double? fatPct, double? musclePct) {
+  if (fatPct == null || musclePct == null) return null;
+  final r = 100 - fatPct - musclePct;
+  return r < 0 ? null : r;
+}
+
 /// Altura efetiva: a da avaliação ou, se vazia, a do perfil.
 double? effectiveHeight(BodyAssessment a, Profile? profile) =>
     a['altura_cm'] ?? profile?.heightCm;
@@ -58,6 +65,9 @@ double? effectiveHeight(BodyAssessment a, Profile? profile) =>
 /// `imc`, `massa_gorda_kg` (calculada se faltar) e `medida:<id>`.
 double? metricValue(BodyAssessment a, String metric, Profile? profile) {
   if (metric == 'imc') return bmi(a['peso_kg'], effectiveHeight(a, profile));
+  if (metric == 'residuos_pct') {
+    return residualPct(a['gordura_pct'], a['massa_muscular_pct']);
+  }
   if (metric == 'massa_gorda_kg') {
     return a['massa_gorda_kg'] ?? fatMassKg(a['peso_kg'], a['gordura_pct']);
   }

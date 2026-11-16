@@ -1,7 +1,6 @@
 // Backup completo em JSON e importação (substitui tudo).
 //
 // Formato: {app, formato, schema_version, exportado_em, tabelas: {nome: [linhas]}}.
-// O PIN (cofre seguro) nunca entra no backup.
 import 'dart:convert';
 
 import 'package:sqflite/sqflite.dart';

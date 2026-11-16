@@ -4,7 +4,9 @@
 // versão e suba [schemaVersion]. Nunca edite uma migration já publicada.
 import 'package:sqflite/sqflite.dart';
 
-const schemaVersion = 1;
+import 'personal_seed.dart';
+
+const schemaVersion = 2;
 
 /// Ordem das tabelas respeitando as chaves estrangeiras (pais primeiro).
 /// Usada pelo backup para apagar (ordem inversa) e inserir.
@@ -146,6 +148,10 @@ CREATE TABLE config (
     'CREATE INDEX idx_cardio_dia ON cardio(treino_dia_id)',
     'CREATE INDEX idx_medida_avaliacao ON medida(avaliacao_id)',
   ],
+  // v2: massa muscular em percentual (como na avaliação da academia).
+  2: [
+    'ALTER TABLE avaliacao_corporal ADD COLUMN massa_muscular_pct REAL',
+  ],
 };
 
 /// Exercícios iniciais: (nome, unidade, grupo).
@@ -228,11 +234,15 @@ Future<void> seedV1(DatabaseExecutor db) async {
 }
 
 /// Aplica as migrations de [from] (exclusive) até [to] (inclusive).
-Future<void> migrate(DatabaseExecutor db, int from, int to) async {
+///
+/// [personalSeed] grava os dados iniciais do dono (desligado nos testes).
+Future<void> migrate(DatabaseExecutor db, int from, int to,
+    {bool personalSeed = true}) async {
   for (var v = from + 1; v <= to; v++) {
     for (final sql in migrations[v] ?? const <String>[]) {
       await db.execute(sql);
     }
     if (v == 1) await seedV1(db);
   }
+  if (personalSeed && from < 2 && to >= 2) await seedPersonalData(db);
 }

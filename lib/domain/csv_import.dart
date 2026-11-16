@@ -17,6 +17,7 @@ const csvFixedColumns = [
   'massa_gorda_kg',
   'massa_magra_kg',
   'massa_muscular_kg',
+  'massa_muscular_pct',
   'massa_ossea_kg',
   'agua_pct',
   'proteina_pct',

@@ -8,8 +8,10 @@ do relógio e as **avaliações corporais**. O app mostra a **evolução**,
 
 - 100% offline e local (SQLite). Sem backend, login, analytics nem permissão
   de internet no APK de release.
-- Protegido por PIN (SHA-256 + salt no cofre seguro do Android), com
-  `FLAG_SECURE` e bloqueio após 2 min em segundo plano.
+- Abre direto, sem PIN (pedido do dono). `FLAG_SECURE` continua ligado
+  (sem prints do app e conteúdo escondido no app switcher).
+- Já nasce com o perfil e a avaliação física de 08/09/2026 do dono
+  (`lib/core/db/personal_seed.dart`).
 - Os dados só saem do celular pelo backup JSON que você exporta.
 
 ## Comandos
@@ -34,11 +36,9 @@ O build de release, a chave de assinatura e a instalação no celular estão em
 ```
 lib/
   main.dart
-  app/            tema, rotas (go_router), shell com abas, porta do PIN
+  app/            tema, rotas (go_router), shell com abas
   core/           banco (schema, migrations, mappers), providers, formatação, widgets comuns
   features/
-    auth/         PIN (serviço, teclado, desbloqueio, troca)
-    onboarding/   primeira execução
     today/        plano do dia + repositório de treinos/recordes
     logging/      aba Lançar
     cardio/       formulário, card do dia, repositório e CardioSource (v2: Health Connect)
@@ -51,7 +51,7 @@ lib/
 test/
   domain/         regra de ouro, cumprimento, recordes, sequência, extrato, corpo, CSV
   data/           repositórios com SQLite em memória (sqflite_common_ffi)
-  widget/         onboarding, fluxo de lançamento e telas em 320 dp com fonte 1,3x
+  widget/         fluxo de lançamento e telas em 320 dp com fonte 1,3x
 ```
 
 Camadas: telas → providers (Riverpod) → repositórios → banco. Toda escrita
@@ -80,7 +80,10 @@ então as telas se atualizam sozinhas.
   repetidas de uma vez, na pré-visualização. Colunas desconhecidas podem
   virar tipos de medida novos (categoria "outro", unidade escolhida).
 - **Backup**: JSON `{app, formato, schema_version, exportado_em, tabelas}`;
-  importar é atômico e recusa versão de schema mais nova. O PIN não entra.
+  importar é atômico e recusa versão de schema mais nova.
 - **Android**: `allowBackup=false` (fora do backup automático do Google),
   retrato, `minSdk 24`, permissão `INTERNET` removida no manifest de release.
+- **Massa muscular** em % (`massa_muscular_pct`, schema v2), como na
+  avaliação da academia; o campo em kg continua opcional. **Resíduos (%)**
+  = 100 − gordura% − massa muscular% é calculado, nunca gravado.
 - **Fontes** Oswald e Rubik empacotadas em `assets/fonts/` (OFL 1.1).

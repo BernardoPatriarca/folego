@@ -149,10 +149,6 @@ void main() {
       expect(validateEffort(11), 'O esforço vai de 1 a 10');
       expect(validateEffort(0), 'O esforço vai de 1 a 10');
       expect(validateEffort(7), isNull);
-      expect(validatePin('12a4'), 'Use apenas números');
-      expect(validatePin('123'), 'O PIN tem de 4 a 6 dígitos');
-      expect(validatePin('1234567'), 'O PIN tem de 4 a 6 dígitos');
-      expect(validatePin('123456'), isNull);
     });
   });
 }

@@ -287,7 +287,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
-  static const version = '1.0.0';
+  static const version = '1.0.1';
 
   @override
   Widget build(BuildContext context) {
@@ -307,8 +307,8 @@ class AboutPage extends StatelessWidget {
             for (final line in const [
               'Uso pessoal, 100% offline: sem servidor, sem login, sem '
                   'analytics e sem permissão de internet.',
-              'Protegido por PIN. Os dados só saem do celular pelo backup que '
-                  'você exporta.',
+              'Os dados ficam só no celular e só saem pelo backup que você '
+                  'exporta.',
               'O treino funciona como um extrato: planeje, lance e acompanhe.',
               'Só você contra você: sem rankings e sem comparação com outras '
                   'pessoas.',

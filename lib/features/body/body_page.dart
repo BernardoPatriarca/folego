@@ -145,6 +145,8 @@ class _Summary extends StatelessWidget {
       'peso_kg',
       'imc',
       'gordura_pct',
+      'massa_muscular_pct',
+      'residuos_pct',
       'massa_muscular_kg',
       'agua_pct',
       'gordura_visceral',

@@ -1,4 +1,4 @@
-// Aba Mais: atalhos para catálogo, regras, metas, PIN, backup e sobre.
+// Aba Mais: atalhos para catálogo, regras, metas, backup e sobre.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -45,8 +45,7 @@ class MorePage extends ConsumerWidget {
                         'últimas ${rule.window} sessões'),
             tile(Icons.calendar_view_week, 'Semana e cardio', '/mais/semana',
                 sub: cardio == null ? null : 'Meta: $cardio min por semana'),
-            const SectionTitle('Segurança e dados'),
-            tile(Icons.lock_outline, 'Trocar PIN', '/mais/pin'),
+            const SectionTitle('Dados'),
             tile(Icons.backup_outlined, 'Backup e importação', '/mais/backup',
                 sub: 'Exportar, restaurar e importar CSV'),
             tile(Icons.info_outline, 'Sobre', '/mais/sobre'),

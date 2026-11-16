@@ -157,7 +157,7 @@ class _BackupPageState extends ConsumerState<BackupPage> {
                   children: [
                     Text(
                       'Gera folego-backup-AAAA-MM-DD.json com todos os dados '
-                      '(menos o PIN) e abre o compartilhamento do Android: '
+                      'e abre o compartilhamento do Android: '
                       'salve no Drive ou mande para você mesmo.',
                       style: t.bodyMedium,
                     ),

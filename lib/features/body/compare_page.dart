@@ -46,6 +46,7 @@ class _ComparePageState extends ConsumerState<ComparePage> {
     final keys = [
       for (final m in bodyMetrics) m.key,
       'imc',
+      'residuos_pct',
       for (final t in types) 'medida:${t.id}',
     ];
     final rows = <Widget>[];

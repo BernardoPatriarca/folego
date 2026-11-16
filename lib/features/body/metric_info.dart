@@ -13,6 +13,9 @@ class MetricInfo {
 
 MetricInfo metricInfo(String key, List<MeasureType> types) {
   if (key == 'imc') return const MetricInfo('imc', 'IMC', '', 1);
+  if (key == 'residuos_pct') {
+    return const MetricInfo('residuos_pct', 'Resíduos', '%', 1);
+  }
   if (key.startsWith('medida:')) {
     final id = int.tryParse(key.substring(7));
     final t = types.where((t) => t.id == id).firstOrNull;
@@ -28,5 +31,6 @@ List<MetricInfo> chartableMetrics(List<MeasureType> types) => [
       for (final m in bodyMetrics)
         if (m.key != 'altura_cm') MetricInfo(m.key, m.label, m.unit, m.decimals),
       const MetricInfo('imc', 'IMC', '', 1),
+      const MetricInfo('residuos_pct', 'Resíduos', '%', 1),
       for (final t in types) MetricInfo('medida:${t.id}', t.name, t.unit, 1),
     ];

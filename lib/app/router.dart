@@ -6,7 +6,6 @@ import 'package:material_ui/material_ui.dart';
 import '../domain/csv_import.dart';
 import '../domain/dates.dart';
 import '../domain/models.dart';
-import '../features/auth/change_pin_page.dart';
 import '../features/body/assessment_detail_page.dart';
 import '../features/body/assessment_form_page.dart';
 import '../features/body/body_goals_page.dart';
@@ -64,7 +63,6 @@ GoRouter buildRouter() => GoRouter(
         _full('/mais/medidas', (_) => const MeasureTypesPage()),
         _full('/mais/regra', (_) => const GoldenRulePage()),
         _full('/mais/semana', (_) => const WeekCardioPage()),
-        _full('/mais/pin', (_) => const ChangePinPage()),
         _full('/mais/backup', (_) => const BackupPage()),
         _full('/mais/csv',
             (s) => CsvPreviewPage(result: s.extra! as CsvParseResult)),
