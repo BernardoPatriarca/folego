@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Fôlego é 100% offline: garante que nenhuma biblioteca traga a
+         permissão de internet para o APK de release. -->
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+</manifest>

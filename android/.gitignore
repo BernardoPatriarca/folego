@@ -1,0 +1,18 @@
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/to/reference-keystore
+key.properties
+**/*.keystore
+**/*.jks
+
+# Exceção: chave de TESTE, sem valor de segredo (ver LEIAME-RELEASE.md).
+# A chave de release de verdade (key.properties + .jks) nunca entra no git.
+!app/folego-teste.keystore
