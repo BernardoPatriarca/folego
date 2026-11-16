@@ -46,3 +46,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# APKs baixados/gerados localmente (os oficiais ficam nas releases do GitHub)
+/apk/
+*.apk
